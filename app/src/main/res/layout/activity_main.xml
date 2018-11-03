@@ -67,7 +67,7 @@
         app:layout_constraintVertical_bias="0.028" />
 
     <SeekBar
-        android:id="@+id/seekBar2"
+        android:id="@+id/mSeekBar"
         android:layout_width="match_parent"
         android:layout_height="29dp"
         android:layout_marginBottom="8dp"
@@ -81,7 +81,7 @@
         app:layout_constraintVertical_bias="0.065" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/leftTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -97,7 +97,7 @@
         app:layout_constraintVertical_bias="0.678" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/rightTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -123,7 +123,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3">
+        app:layout_constraintTop_toBottomOf="@+id/leftTime">
 
         <Button
             android:id="@+id/prevButton"
