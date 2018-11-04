@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button prevButton;
     private Button playButton;
     private Button nextButton;
+    private Thread thread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int currentPos = mediaPlayer.getCurrentPosition();
                 int duration = mediaPlayer.getDuration();
                 leftTime.setText(dateFormat.format(new Date(currentPos)));
-                rightTime.setText(dateFormat.format(new Date(duration-currentPos)));
+                rightTime.setText(dateFormat.format(new Date(duration - currentPos)));
             }
 
             @Override
@@ -75,33 +76,85 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.prevButton:
-
+                // code
+                backMusic();
                 break;
             case R.id.playButton:
-                if(mediaPlayer.isPlaying()) {
+                if (mediaPlayer.isPlaying()) {
                     pauseMusic();
                 } else {
                     startMusic();
                 }
                 break;
             case R.id.nextButton:
+                nextMusic();
                 break;
         }
     }
 
     public void pauseMusic() {
-        if( mediaPlayer != null ) {
+        if (mediaPlayer != null) {
             mediaPlayer.pause();
             playButton.setBackgroundResource(android.R.drawable.ic_media_play);
         }
     }
 
     public void startMusic() {
-        if( mediaPlayer != null ) {
+        if (mediaPlayer != null) {
             mediaPlayer.start();
+            updateThread();
             playButton.setBackgroundResource(android.R.drawable.ic_media_pause);
         }
+    }
+
+    public void backMusic() {
+        if(mediaPlayer.isPlaying()) {
+            // for now
+            mediaPlayer.seekTo(0);
+        }
+    }
+
+    public void nextMusic() {
+        if(mediaPlayer.isPlaying()) {
+            mediaPlayer.seekTo(mediaPlayer.getDuration());
+        }
+    }
+
+    public void updateThread() {
+        thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+
+                    while (mediaPlayer != null && mediaPlayer.isPlaying()) {
+
+                        Thread.sleep(50);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                int newPosition = mediaPlayer.getCurrentPosition();
+                                int newMax = mediaPlayer.getDuration();
+                                seekbar.setMax(newMax);
+                                seekbar.setProgress(newPosition);
+
+                                // update the text
+                                leftTime.setText(String.valueOf(new java.text.SimpleDateFormat("mm:ss")
+                                        .format(new Date(mediaPlayer.getCurrentPosition()))));
+
+                                rightTime.setText(String.valueOf(new java.text.SimpleDateFormat("mm:ss")
+                                        .format(new Date(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()))));
+
+                            }
+                        });
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread.start();
     }
 }
